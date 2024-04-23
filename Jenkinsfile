@@ -19,5 +19,10 @@ agent any
      archiveArtifacts artifacts: 'output/*.txt', excludes: 'output/*.md'
      }
    }
+  stage('Interactive input') {
+    steps {
+    input 'Add input'
+     }
+   }
   }
 }
