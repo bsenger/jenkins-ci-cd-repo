@@ -1,28 +1,44 @@
 pipeline {
 agent any
-parameters {
-string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
 
-booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
-
-choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
-
-password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+ parameters {
+  choice(
+   name: 'ENVIRONMENT',
+   choices: ['dev', 'qa', 'prod'],
+   description: 'Select the deployment environment'
+ )
 }
 stages {
-stage('Example') {
+ stage('Build') {
+  steps {
+// Add your build steps here
+   echo "Building for ${params.ENVIRONMENT} environment"
+  }
+}
+
+ stage('Deploy') {
+  when {
+   expression {
+// You can use the 'params.ENVIRONMENT' variable to make decisions in your pipeline
+   return params.ENVIRONMENT == 'qa' || params.ENVIRONMENT == 'prod'
+  }
+}
 steps {
-echo "Hello ${params.PERSON}"
-
-echo "Biography: ${params.BIOGRAPHY}"
-
-echo "Toggle: ${params.TOGGLE}"
-
-echo "Choice: ${params.CHOICE}"
-
-echo "Password: ${params.PASSWORD}"
+// Add your deployment steps here
+  echo "Deploying to ${params.ENVIRONMENT} environment"
+  }
+}
+stage('Test') {
+  steps {
+// Add your testing steps here
+  echo "Testing in ${params.ENVIRONMENT} environment"
+ }
 }
 }
-}
+post {
+always {
+// Add any cleanup or post-build steps here
+echo "Pipeline completed for ${params.ENVIRONMENT} environment"
+ }
+ }
 }
