@@ -1,28 +1,28 @@
 pipeline {
 agent any
- stages {
-  stage('Create build output') {
-   steps {
-    script {
-     // Make the output directory.
-     sh "mkdir -p output"
-     // Write a useful file, which is needed to be archived.
-     writeFile file: "output/usefulfile.txt", text: "This file is useful, need to archive it."
-    // Write a useless file, which is not needed to be archived.
-     writeFile file: "output/uselessfile.md", text: "This file is useless, no need to archive it."
-     }
-    }
-   }
-   stage('Archive build output') {
-    steps {
-    // Archive the build output artifacts.
-     archiveArtifacts artifacts: 'output/*.txt', excludes: 'output/*.md'
-     }
-   }
-  stage('Interactive input') {
-    steps {
-    input 'Add input'
-     }
-   }
-  }
+parameters {
+string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
+
+booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
+
+choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+
+password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+}
+stages {
+stage('Example') {
+steps {
+echo "Hello ${params.PERSON}"
+
+echo "Biography: ${params.BIOGRAPHY}"
+
+echo "Toggle: ${params.TOGGLE}"
+
+echo "Choice: ${params.CHOICE}"
+
+echo "Password: ${params.PASSWORD}"
+}
+}
+}
 }
