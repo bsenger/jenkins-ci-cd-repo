@@ -1,5 +1,6 @@
 pipeline {
 agent any
+   stages{
 stage('Create build output') {
 // Make the output directory.
    sh "mkdir -p output"
@@ -15,4 +16,5 @@ stage('Archive build output') {
 // Archive the build output artifacts.
     archiveArtifacts artifacts: 'output/*.txt', excludes: 'output/*.md'
   }
+}
 }
